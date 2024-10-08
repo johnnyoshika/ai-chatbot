@@ -1,3 +1,13 @@
+## Next.js AI Chatbot
+
+[Next.js AI Chatbot](https://vercel.com/templates/next.js/nextjs-ai-chatbot)
+
+https://github.com/vercel/ai-chatbot
+
+https://vercel.com/johnnyexamindios-projects/ai-chatbot
+
+==
+
 <a href="https://chat.vercel.ai/">
   <img alt="Next.js 14 and App Router-ready AI chatbot." src="https://chat.vercel.ai/opengraph-image.png">
   <h1 align="center">Next.js AI Chatbot</h1>

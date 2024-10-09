@@ -12,13 +12,12 @@ export const authConfig = {
       const isOnLoginPage = nextUrl.pathname.startsWith('/login')
       const isOnSignupPage = nextUrl.pathname.startsWith('/signup')
 
-      if (isLoggedIn) {
-        if (isOnLoginPage || isOnSignupPage) {
-          return Response.redirect(new URL('/', nextUrl))
-        }
+      if (isOnLoginPage || isOnSignupPage) {
+        if (isLoggedIn) return Response.redirect(new URL('/', nextUrl))
+        else true
       }
 
-      return true
+      return isLoggedIn
     },
     async jwt({ token, user }) {
       if (user) {

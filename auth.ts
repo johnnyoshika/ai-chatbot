@@ -2,8 +2,6 @@ import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import { authConfig } from './auth.config'
 import { z } from 'zod'
-import { getStringFromBuffer } from './lib/utils'
-import { getUser } from './app/login/actions'
 
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -12,33 +10,43 @@ export const { auth, signIn, signOut } = NextAuth({
       async authorize(credentials) {
         const parsedCredentials = z
           .object({
-            email: z.string().email(),
-            password: z.string().min(6)
+            message: z.string().min(1),
+            hash: z.string().min(1)
           })
+          .refine(
+            data => {
+              try {
+                JSON.parse(data.message)
+                return true
+              } catch {
+                return false
+              }
+            },
+            {
+              message: 'message must be a valid JSON string'
+            }
+          )
           .safeParse(credentials)
 
-        if (parsedCredentials.success) {
-          const { email, password } = parsedCredentials.data
-          const user = await getUser(email)
+        if (!parsedCredentials.success) return null
 
-          if (!user) return null
+        const { message, hash } = parsedCredentials.data
 
-          const encoder = new TextEncoder()
-          const saltedPassword = encoder.encode(password + user.salt)
-          const hashedPasswordBuffer = await crypto.subtle.digest(
-            'SHA-256',
-            saltedPassword
-          )
-          const hashedPassword = getStringFromBuffer(hashedPasswordBuffer)
-
-          if (hashedPassword === user.password) {
-            return user
-          } else {
-            return null
+        const response = await fetch(
+          `${process.env.AUTH_SERVER_URL}/v1.0/verify`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message, hash })
           }
-        }
+        )
 
-        return null
+        if (!response.ok) return null
+
+        // User data will be JSON serialized and stashed in message
+        return JSON.parse(message)
       }
     })
   ]

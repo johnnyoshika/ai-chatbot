@@ -6,6 +6,8 @@ https://github.com/vercel/ai-chatbot
 
 https://vercel.com/johnnyexamindios-projects/ai-chatbot
 
+See [password.txt](password.txt) for app login credentials.
+
 ==
 
 <a href="https://chat.vercel.ai/">

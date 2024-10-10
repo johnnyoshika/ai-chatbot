@@ -39,3 +39,13 @@ export interface User extends Record<string, any> {
   password: string
   salt: string
 }
+
+export interface Comment {
+  id: string
+  text: string
+  startOffset: number
+  endOffset: number
+  topOffset: number
+  bottomOffset: number
+  height: number
+}

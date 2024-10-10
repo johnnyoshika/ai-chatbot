@@ -6,7 +6,70 @@ https://github.com/vercel/ai-chatbot
 
 https://vercel.com/johnnyexamindios-projects/ai-chatbot
 
-See [password.txt](password.txt) for app login credentials.
+See [password.txt](password.txt) in local DOLOMITES for app login credentials.
+
+2024-10-10 Update:
+
+Shelving this for now. One useful feature that came out of this is the ability to log in to Nextjs from Firebase. Add this to Firebase api endpoint to test this:
+
+```typescript
+import { verify } from './endpoints/verify'
+import { sign as hash } from '../utils/signature'
+
+// Used by other applications to verify the signature of a message
+app.post('/v1.0/verify', verify())
+
+// Launch Next.js app
+// http://127.0.0.1:5001/demo-project/us-central1/api/v1.0/launch
+app.get('/v1.0/launch', (req, res) => {
+  const message = {
+    id: '-seed-user-stu',
+    name: 'Stu',
+    email: 'stu@email.com'
+  }
+
+  const h = hash(
+    JSON.stringify(message),
+    new Date(Date.now() + 1000 * 60 * 60 * 24)
+  )
+
+  res.send(`
+    <html>
+      <head>
+        <title>Launch</title>
+      </head>
+      <body>
+        <form action="http://localhost:3000/api/login" method="post">
+          <input type="hidden" name="message" value="${encodeURIComponent(
+            JSON.stringify(message)
+          )}">
+          <input type="hidden" name="hash" value="${encodeURIComponent(h)}">
+          <input type="hidden" name="redirect" value="/">
+          <button type="submit">Launch</button>
+        </form>
+      </body>
+    </html>
+  `)
+})
+```
+
+Where endpoints/verify is:
+
+```typescript
+import express from 'express'
+import { ErrorResponse } from '../../errors/ErrorResponse'
+import { catchAsync } from '../../errors/catchAsync'
+import { verify as check } from '../../utils/signature'
+
+export const verify = () =>
+  catchAsync(async (req: express.Request, res: express.Response) => {
+    const { message, hash } = req.body
+
+    if (!check(message, hash)) throw new ErrorResponse('Invalid hash')
+
+    res.send({ message })
+  })
+```
 
 ==
 

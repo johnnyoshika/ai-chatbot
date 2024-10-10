@@ -8,6 +8,8 @@ https://vercel.com/johnnyexamindios-projects/ai-chatbot
 
 See [password.txt](password.txt) in local DOLOMITES for app login credentials.
 
+Uses this KV Store: https://vercel.com/johnnyexamindios-projects/~/stores/kv/store_5jlSjKqR6fpqAhct/cli
+
 2024-10-10 Update:
 
 Shelving this for now. One useful feature that came out of this is the ability to log in to Nextjs from Firebase. Add this to Firebase api endpoint to test this:

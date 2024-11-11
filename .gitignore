@@ -38,3 +38,4 @@ yarn-error.log*
 
 # password file
 password.txt
+.vercel
